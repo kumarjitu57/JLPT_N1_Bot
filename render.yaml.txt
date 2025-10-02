@@ -3,6 +3,6 @@ services:
     name: jlpt-n1-bot
     env: python
     plan: free
-    region: oregon # or choose your preferred region
+    region: oregon  # choose your preferred region
     buildCommand: pip install -r requirements.txt
     startCommand: python main.py
