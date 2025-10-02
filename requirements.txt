@@ -1,2 +1,4 @@
 python-telegram-bot==20.4
 google-generativeai==0.13.0
+gtts==2.3.2
+pygame==2.6.1
