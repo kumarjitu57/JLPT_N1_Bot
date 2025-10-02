@@ -5,8 +5,8 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 # ---------------- CONFIG ---------------- #
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"        # 🔑 Replace with your Gemini API key
-TELEGRAM_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"    # 🔑 Replace with your Telegram bot token
+GEMINI_API_KEY = "AIzaSyDzzq2WYGyeGdF4kjfvCCv5aNZcGHHNd5k"        # 🔑 Replace with your Gemini API key
+TELEGRAM_TOKEN = "8473657110:AAHL7HPMCuy2FnjL9OA7e0PFjMAa-rAeVjU"    # 🔑 Replace with your Telegram bot token
 
 # ---------------- INIT GEMINI ---------------- #
 genai.configure(api_key=GEMINI_API_KEY)
