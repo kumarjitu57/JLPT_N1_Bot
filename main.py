@@ -42,7 +42,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ Gemini API error. Please try again later.")
 
 # ---------------- QUART APP ---------------- #
-app = Quart(__name__)
+from flask import Flask, request
+app = Flask(__name__)
 application = Application.builder().token(TELEGRAM_TOKEN).build()
 
 # Add Telegram handlers
