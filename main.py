@@ -1,9 +1,12 @@
 import os
 import asyncio
-from quart import Quart, request
+from flask import Flask, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import google.generativeai as genai
+
+
+
 
 # ---------------- CONFIG ---------------- #
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
