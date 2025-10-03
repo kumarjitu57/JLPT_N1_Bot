@@ -4,6 +4,6 @@ services:
     env: python
     plan: free
     region: oregon
-    pythonVersion: 3.11.8    # <--- set this to a stable version
-    buildCommand: pip install -r requirements.txt
+    pythonVersion: 3.11.8  # change from 3.13.4 to 3.11.8
+    buildCommand: pip install --prefer-binary -r requirements.txt
     startCommand: python main.py
