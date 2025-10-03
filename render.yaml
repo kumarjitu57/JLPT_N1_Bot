@@ -4,6 +4,15 @@ services:
     env: python
     plan: free
     region: oregon
-    pythonVersion: 3.11.8  # change from 3.13.4 to 3.11.8
     buildCommand: pip install --prefer-binary -r requirements.txt
     startCommand: python main.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: RENDER_EXTERNAL_URL
+        fromService:
+          type: web
+          name: jlpt-n1-bot
+          property: url
