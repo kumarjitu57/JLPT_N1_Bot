@@ -1,7 +1,3 @@
-# ---------------- CONFIG ---------------- #
-#GEMINI_API_KEY = "AIzaSyDzzq2WYGyeGdF4kjfvCCv5aNZcGHHNd5k"        # 🔑 Replace with your Gemini API key
-#TELEGRAM_TOKEN = "8473657110:AAHL7HPMCuy2FnjL9OA7e0PFjMAa-rAeVjU"    # 🔑 Replace with your Telegram bot token
-
 # main.py
 import os
 from flask import Flask, request
@@ -10,18 +6,30 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 # ---------------- CONFIG ---------------- #
-TELEGRAM_TOKEN = os.getenv("8473657110:AAHL7HPMCuy2FnjL9OA7e0PFjMAa-rAeVjU")  
-GEMINI_API_KEY = os.getenv("AIzaSyDzzq2WYGyeGdF4kjfvCCv5aNZcGHHNd5k")  
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")      # Set in Render Environment
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")      # Set in Render Environment
+
+if not TELEGRAM_TOKEN or not GEMINI_API_KEY:
+    raise ValueError("Please set TELEGRAM_TOKEN and GEMINI_API_KEY in your environment variables!")
 
 # ---------------- INIT GEMINI ---------------- #
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-2.5")  
+model = genai.GenerativeModel("gemini-2.5")  # Use your preferred model
 
 # ---------------- SAMPLE DATA ---------------- #
-vocab_list = [{"kanji": "曖昧", "reading": "あいまい", "meaning": "ambiguous", "japanese_def": "はっきりしないこと"}]
-grammar_list = [{"point": "〜わけではない", "meaning": "it does not mean that ...", "example": "高い料理が必ず美味しいわけではない。"}]
-dokkai_list = [{"question": "この文章の主題は何ですか？", "options": ["環境問題", "経済成長"], "answer": "環境問題"}]
+vocab_list = [
+    {"kanji": "曖昧", "reading": "あいまい", "meaning": "ambiguous", "japanese_def": "はっきりしないこと"}
+]
 
+grammar_list = [
+    {"point": "〜わけではない", "meaning": "it does not mean that ...", "example": "高い料理が必ず美味しいわけではない。"}
+]
+
+dokkai_list = [
+    {"question": "この文章の主題は何ですか？", "options": ["環境問題", "経済成長"], "answer": "環境問題"}
+]
+
+# ---------------- USER DATA ---------------- #
 user_sessions = {}
 
 def get_user_id(update: Update):
@@ -80,10 +88,10 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 app = Flask("JLPT_N1_Bot")
 
 @app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
-async def webhook():
+def webhook():
     data = request.get_json(force=True)
     update = Update.de_json(data, application.bot)
-    await application.update_queue.put(update)
+    application.update_queue.put_nowait(update)
     return "ok"
 
 @app.route("/")
@@ -104,8 +112,10 @@ if __name__ == "__main__":
 
     # Set webhook
     RENDER_URL = os.getenv("RENDER_EXTERNAL_URL")
+    if not RENDER_URL:
+        raise ValueError("RENDER_EXTERNAL_URL not set in Render environment!")
     application.bot.set_webhook(f"{RENDER_URL}/{TELEGRAM_TOKEN}")
 
-    # Run Flask
+    # Run Flask server
     port = int(os.getenv("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
