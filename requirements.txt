@@ -1,16 +1,14 @@
 # Telegram bot
 python-telegram-bot==20.7
 
-# Flask for Render hosting
-Flask==2.3.5
+# Flask for hosting
+Flask>=2.2.5,<2.3.5
 
 # Google Gemini AI client
 google-generativeai==0.1.4
 
-# Optional: for async support (usually included in Python 3.9+)
+# Async support
 aiohttp==3.8.5
 
-# Optional: for text-to-speech if you use gTTS
+# Optional: Text-to-speech
 gTTS==2.3.2
-
-# Optional: SQLite is built-in, no need to install
