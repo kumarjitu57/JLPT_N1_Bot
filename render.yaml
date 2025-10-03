@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     region: oregon
-    pythonVersion: 3.11.8
+    pythonVersion: 3.11.8   # <- downgrade here
     buildCommand: pip install --prefer-binary -r requirements.txt
     startCommand: python main.py
     envVars:
