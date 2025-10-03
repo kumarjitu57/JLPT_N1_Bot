@@ -99,6 +99,9 @@ def index():
     return "JLPT N1 Bot is running ✅"
 
 # ---------------- MAIN ---------------- #
+import threading
+
+# At the bottom of main.py
 if __name__ == "__main__":
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
@@ -110,11 +113,8 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("progress", progress))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
 
-    # Set webhook
-    RENDER_URL = os.getenv("RENDER_EXTERNAL_URL")
-    if not RENDER_URL:
-        raise ValueError("RENDER_EXTERNAL_URL not set in Render environment!")
-    application.bot.set_webhook(f"{RENDER_URL}/{TELEGRAM_TOKEN}")
+    # Run Telegram bot in background thread
+    threading.Thread(target=lambda: application.run_polling(), daemon=True).start()
 
     # Run Flask server
     port = int(os.getenv("PORT", 10000))
