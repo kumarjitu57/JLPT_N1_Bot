@@ -10,8 +10,8 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 # ---------------- CONFIG ---------------- #
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")  
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  
+TELEGRAM_TOKEN = os.getenv("8473657110:AAHL7HPMCuy2FnjL9OA7e0PFjMAa-rAeVjU")  
+GEMINI_API_KEY = os.getenv("AIzaSyDzzq2WYGyeGdF4kjfvCCv5aNZcGHHNd5k")  
 
 # ---------------- INIT GEMINI ---------------- #
 genai.configure(api_key=GEMINI_API_KEY)
