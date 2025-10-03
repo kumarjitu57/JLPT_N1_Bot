@@ -4,12 +4,15 @@ services:
     env: python
     plan: free
     region: oregon
+    pythonVersion: 3.11.8
     buildCommand: pip install --prefer-binary -r requirements.txt
     startCommand: python main.py
     envVars:
       - key: TELEGRAM_TOKEN
+        value: "8473657110:AAHL7HPMCuy2FnjL9OA7e0PFjMAa-rAeVjU"
         sync: false
       - key: GEMINI_API_KEY
+        value: "AIzaSyDzzq2WYGyeGdF4kjfvCCv5aNZcGHHNd5k"
         sync: false
       - key: RENDER_EXTERNAL_URL
         fromService:
