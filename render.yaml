@@ -17,4 +17,3 @@ services:
           type: web
           name: jlpt-n1-bot
           property: url
-

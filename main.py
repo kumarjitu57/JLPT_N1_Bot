@@ -1,14 +1,14 @@
-# main.py
 import os
-from flask import Flask, request
+import asyncio
+from quart import Quart, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import google.generativeai as genai
 
 # ---------------- CONFIG ---------------- #
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")          # Your Telegram Bot Token
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")          # Your Gemini API Key
-RENDER_URL = os.getenv("RENDER_EXTERNAL_URL")         # Render External URL for webhook
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+RENDER_URL = os.getenv("RENDER_EXTERNAL_URL")  # Render automatically sets this
 
 # ---------------- INIT GEMINI ---------------- #
 genai.configure(api_key=GEMINI_API_KEY)
@@ -38,8 +38,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception:
         await update.message.reply_text("⚠️ Gemini API error. Please try again later.")
 
-# ---------------- FLASK APP ---------------- #
-app = Flask("JLPT_N1_Bot")
+# ---------------- QUART APP ---------------- #
+app = Quart(__name__)
 application = Application.builder().token(TELEGRAM_TOKEN).build()
 
 # Add Telegram handlers
@@ -49,21 +49,20 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
 # Webhook route
 @app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
 async def webhook():
-    data = request.get_json(force=True)
+    data = await request.get_json(force=True)
     update = Update.de_json(data, application.bot)
     await application.update_queue.put(update)
     return "ok"
 
-# Health check route
+# Health check
 @app.route("/")
-def index():
+async def index():
     return "JLPT N1 Bot is running ✅"
 
 # ---------------- MAIN ---------------- #
 if __name__ == "__main__":
     # Set webhook
-    application.bot.set_webhook(f"{RENDER_URL}/{TELEGRAM_TOKEN}")
+    asyncio.run(application.bot.set_webhook(f"{RENDER_URL}/{TELEGRAM_TOKEN}"))
     
-    # Run Flask server
-    port = int(os.getenv("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    # Run Quart server
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
