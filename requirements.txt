@@ -1,14 +1,4 @@
-# Telegram bot
 python-telegram-bot==20.7
-
-# Flask for hosting
-Flask>=2.2.5,<2.3.5
-
-# Google Gemini AI client
-google-generativeai==0.8.5
-
-# Async support
-aiohttp==3.8.5
-
-# Optional: Text-to-speech
-gTTS==2.3.2
+Flask==2.3.3
+google-generativeai>=0.8.0
+aiohttp>=3.9.0
