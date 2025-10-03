@@ -11,12 +11,18 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Set in Render Environment
 
 # ---------------- INIT GEMINI ---------------- #
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-2.5")  # Adjust if needed
+model = genai.GenerativeModel("gemini-2.5")
 
 # ---------------- SAMPLE DATA ---------------- #
-vocab_list = [{"kanji": "曖昧", "reading": "あいまい", "meaning": "ambiguous", "japanese_def": "はっきりしないこと"}]
-grammar_list = [{"point": "〜わけではない", "meaning": "it does not mean that ...", "example": "高い料理が必ず美味しいわけではない。"}]
-dokkai_list = [{"question": "この文章の主題は何ですか？", "options": ["環境問題", "経済成長"], "answer": "環境問題"}]
+vocab_list = [
+    {"kanji": "曖昧", "reading": "あいまい", "meaning": "ambiguous", "japanese_def": "はっきりしないこと"}
+]
+grammar_list = [
+    {"point": "〜わけではない", "meaning": "it does not mean that ...", "example": "高い料理が必ず美味しいわけではない。"}
+]
+dokkai_list = [
+    {"question": "この文章の主題は何ですか？", "options": ["環境問題", "経済成長"], "answer": "環境問題"}
+]
 
 # ---------------- USER DATA ---------------- #
 user_sessions = {}
@@ -60,7 +66,6 @@ async def progress(update: Update, context: ContextTypes.DEFAULT_TYPE):
     session = user_sessions.get(user_id, [])
     await update.message.reply_text(f"You have interacted {len(session)} times with the bot.")
 
-# ---------------- CHAT FALLBACK ---------------- #
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = get_user_id(update)
     user_sessions.setdefault(user_id, [])
@@ -77,6 +82,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ---------------- FLASK APP ---------------- #
 app = Flask("JLPT_N1_Bot")
 
+# ---------------- TELEGRAM WEBHOOK ---------------- #
 @app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
 async def webhook():
     data = request.get_json(force=True)
@@ -90,7 +96,6 @@ def index():
 
 # ---------------- MAIN ---------------- #
 if __name__ == "__main__":
-    # Build Telegram application
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
     # Add handlers
@@ -101,11 +106,10 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("progress", progress))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
 
-    # Set webhook on Render
+    # Set webhook
     RENDER_URL = os.getenv("RENDER_EXTERNAL_URL")
     application.bot.set_webhook(f"{RENDER_URL}/{TELEGRAM_TOKEN}")
-    print(f"Webhook set: {RENDER_URL}/{TELEGRAM_TOKEN}")
 
-    # Run Flask server
+    # Run Flask server (Webhook endpoint will handle Telegram updates)
     port = int(os.getenv("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
